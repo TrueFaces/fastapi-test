@@ -25,3 +25,5 @@ Ejemplo:
 
 ## CloudBuild
 Para realizar los despliegues de codigo automáticos
+
+Se crea el fichero cloudbuild.yaml con los pasos del despliegue.
