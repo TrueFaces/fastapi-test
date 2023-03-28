@@ -21,3 +21,7 @@ Ejemplo:
 Ejemplo:
 
     gcloud run deploy --image gcr.io/kcbootcamp-380917/truefaces-api --platform managed
+
+
+## CloudBuild
+Para realizar los despliegues de codigo automáticos
