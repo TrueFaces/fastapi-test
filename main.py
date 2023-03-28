@@ -38,7 +38,7 @@ async def get_redoc_documentation():
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile):
     # upload_file_to_bucket("", "data/user/1/" + file.filename, file)
-    return {"file_size": len(file), "filename": file.filename}
+    return {"file_size": file.size, "filename": file.filename}
     
 def upload_file_to_bucket(bucket_name, blob_name, file):
     """Write and read a blob from GCS using file-like IO"""
