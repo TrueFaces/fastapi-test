@@ -59,4 +59,4 @@ def upload_file_to_bucket(bucket_name, blob_name, file):
 
 ## RUN!!!
 if __name__ == "__main__":
-    uvicorn.run(app, port=int(os.environ.get("PORT", 8080)), host="0.0.0.0")
+    uvicorn.run(app, port=int(os.environ.get("PORT", 8000)), host="0.0.0.0")
