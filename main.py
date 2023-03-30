@@ -6,7 +6,6 @@ from fastapi.openapi.docs import get_redoc_html, get_swagger_ui_html
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import OAuth2PasswordBearer
 
-from app.internal import admin
 from app.routers import images, users, auth
 
 
