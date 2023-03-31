@@ -1,5 +1,5 @@
 steps:
-" - name: gcr.io/cloud-builders/docker
+  - name: gcr.io/cloud-builders/docker
     args:
       ["build", "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
 
@@ -26,9 +26,3 @@ steps:
         "--threads,"8", 
         "app.main:app" 
       ]
-
-  - name: 'gcr.io/cloud-builders/gcloud'
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - 
