@@ -15,3 +15,6 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . .
+
+CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker  --threads 8 app.main:app
+# CMD exec 'uvicorn app.main:app --host 0.0.0.0 --port 8080
