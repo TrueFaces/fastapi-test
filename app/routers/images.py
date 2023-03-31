@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, File, UploadFile
 from google.cloud import storage
 
+from app.db.schemas.image import Image
+
 router = APIRouter(
     prefix="/images",
     tags=["images"],
@@ -11,12 +13,12 @@ fake_items_db = {"plumbus": {"name": "Plumbus"}, "gun": {"name": "Portal Gun"}}
 
 
 
-@router.get("/")
+@router.get("/", response_model=list[Image])
 async def read_items():
     return fake_items_db
 
 
-@router.get("/{item_id}")
+@router.get("/{item_id}", response_model=Image)
 async def read_item(item_id: str):
     if item_id not in fake_items_db:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -36,7 +38,7 @@ async def read_item(item_id: str):
 #     return {"item_id": item_id, "name": "The great Plumbus"}
 
 
-@router.post("/upload/")
+@router.post("/upload/", response_model=Image)
 async def create_upload_file(file: UploadFile):
     # upload_file_to_bucket("", "data/user/1/" + file.filename, file)
     return {"file_size": file.size, "filename": file.filename}
