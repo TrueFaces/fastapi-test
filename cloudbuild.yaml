@@ -1,5 +1,5 @@
 steps:
-  - name: gcr.io/cloud-builders/docker
+" - name: gcr.io/cloud-builders/docker
     args:
       ["build", "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
 
@@ -19,10 +19,16 @@ steps:
         "--platform",
         "managed",
         "--allow-unauthenticated",
+        "gunicorn",
+        "--bind","8080",
+        "--workers", "1",
+        "--worker-class", "uvicorn.workers.UvicornWorker",
+        "--threads,"8", 
+        "app.main:app" 
       ]
 
   - name: 'gcr.io/cloud-builders/gcloud'
     entrypoint: "bash"
     args:
       - "-c"
-      - gunicorn --bind :8080 --workers 1 --worker-class uvicorn.workers.UvicornWorker  --threads 8 app.main:app
+      - 
