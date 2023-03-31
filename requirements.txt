@@ -3,3 +3,4 @@ uvicorn
 python-multipart
 google-cloud-storage
 setuptools
+sqlalchemy

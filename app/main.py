@@ -30,5 +30,5 @@ async def get_redoc_documentation():
     return get_redoc_html(openapi_url="/openapi.json", title="docs")
 
 ## RUN!!!
-if __name__ == "__main__":
-    uvicorn.run(app, port=int(os.environ.get("PORT", 8080)), host="0.0.0.0")
+# if __name__ == "__main__":
+#     uvicorn.run(app, port=int(os.environ.get("PORT", 8080)), host="0.0.0.0")
