@@ -20,3 +20,9 @@ steps:
         "managed",
         "--allow-unauthenticated",
       ]
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - gunicorn --bind :8080 --workers 1 --worker-class uvicorn.workers.UvicornWorker  --threads 8 app.main:app
