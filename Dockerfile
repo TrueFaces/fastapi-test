@@ -1,5 +1,5 @@
 # Use the official lightweight Python image.
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 ENV APP_HOME /app
 WORKDIR $APP_HOME
@@ -8,6 +8,9 @@ WORKDIR $APP_HOME
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PORT 8080
+
+# Cambiar en la varaible de entorno de cloudbuild. Configuracion local
+ENV DATABASE_URL postgresql://truefaces:truefaces@db:5432/truefaces
 
 # install dependencies
 COPY requirements.txt .

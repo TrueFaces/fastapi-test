@@ -20,3 +20,6 @@ steps:
         "managed",
         "--allow-unauthenticated",
       ]
+    env:
+      - 'SECRET_KEY'=$_SECRET_KEY'
+      - 'DATABASE_URL=$_DATABASE_URL'

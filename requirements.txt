@@ -6,4 +6,5 @@ setuptools
 sqlalchemy
 gunicorn
 psycopg2-binary
-  
+python-jose
+passlib
