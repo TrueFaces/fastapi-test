@@ -2,6 +2,9 @@ steps:
   - name: gcr.io/cloud-builders/docker
     args:
       ["build", "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
+    env:
+    - 'SECRET_KEY=$_SECRET_KEY'
+    - 'DATABASE_URL=$_DATABASE_URL'
 
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}"]
@@ -20,6 +23,3 @@ steps:
         "managed",
         "--allow-unauthenticated",
       ]
-    env:
-    - 'SECRET_KEY=$_SECRET_KEY'
-    - 'DATABASE_URL=$_DATABASE_URL'
