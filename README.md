@@ -1,12 +1,14 @@
 # Docker:
 
 ## Local
+Se añadido el docker-compose porque así es capaza de montar la aplicación web y la BD's en postgres
+
 ### Construir la imagen
-    docker build -t truefaces:1.0 .
+    docker-compose build
 
 ### Ejecutar el contenedor
-    docker run -d -p 8000:8000 --name truefaces truefaces:1.0
-
+    docker-compose up
+    
 ## GCP
 ### Construir imagen para el repositorio
     gcloud builds submit --tag gcr.io/{project_id}/{container_name}
