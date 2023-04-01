@@ -5,8 +5,10 @@ steps:
     - 'DATABASE_URL=$_DATABASE_URL'
     args:
       ["build",
-      "--build-arg=SECRET_KEY=${SECRET_KEY}",
-      "--build-arg=DATABASE_URL=${DATABASE_URL}", 
+      "--build-arg",
+      "SECRET_KEY=${SECRET_KEY}",
+      "--build-arg",
+      "DATABASE_URL=${DATABASE_URL}", 
       "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
    
 
