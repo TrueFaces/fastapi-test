@@ -9,6 +9,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PORT 8080
 
+ENV DATABASE_URL $DATABASE_URL
+ENV SECRET_KEY $SECRET_KEY
+
 # Cambiar en la varaible de entorno de cloudbuild. Configuracion local
 ENV DATABASE_URL postgresql://truefaces:truefaces@db:5432/truefaces
 
