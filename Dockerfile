@@ -12,9 +12,6 @@ ENV PORT 8080
 ENV DATABASE_URL $_DATABASE_URL
 ENV SECRET_KEY $_SECRET_KEY
 
-# Cambiar en la varaible de entorno de cloudbuild. Configuracion local
-ENV DATABASE_URL postgresql://truefaces:truefaces@db:5432/truefaces
-
 # install dependencies
 COPY requirements.txt .
 RUN pip install -r requirements.txt
