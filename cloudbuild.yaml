@@ -1,14 +1,11 @@
 steps:
   - name: gcr.io/cloud-builders/docker
-    env:
-    - 'SECRET_KEY=$_SECRET_KEY'
-    - 'DATABASE_URL=$_DATABASE_URL'
     args:
       ["build",
       "--build-arg",
-      "SECRET_KEY=${SECRET_KEY}",
+      "SECRET_KEY=${_SECRET_KEY}",
       "--build-arg",
-      "DATABASE_URL=${DATABASE_URL}", 
+      "DATABASE_URL=${_DATABASE_URL}", 
       "-t", "gcr.io/$PROJECT_ID/${_SERVICE_NAME}:${SHORT_SHA}", "."]
    
 
