@@ -9,8 +9,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV PORT 8080
 
-RUN echo ${_DATABASE_URL}
-RUN echo ${_SECRET_KEY}
+RUN echo $DATABASE_URL
+RUN echo $SECRET_KEY
 
 # install dependencies
 COPY requirements.txt .
