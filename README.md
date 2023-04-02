@@ -1,7 +1,7 @@
 # Docker:
 
 ## Local
-Se añadido el docker-compose porque así es capaza de montar la aplicación web y la BD's en postgres
+Se añadido el docker-compose (poisblemente sea necesario instalar el paquete) porque así se se puede montar la aplicación web y la BD's en postgres de forma local
 
 ### Construir la imagen
     docker-compose build
@@ -10,22 +10,12 @@ Se añadido el docker-compose porque así es capaza de montar la aplicación web
     docker-compose up
     
 ## GCP
-### Construir imagen para el repositorio
-    gcloud builds submit --tag gcr.io/{project_id}/{container_name}
-
-Ejemplo:
-    
-    gcloud builds submit --tag gcr.io/kcbootcamp-380917/truefaces-api
-
-### Desplegar imagen en Cloud Run
-    gcloud run deploy --image gcr.io/{project_id}/{container_name} --platform managed
-
-Ejemplo:
-
-    gcloud run deploy --image gcr.io/kcbootcamp-380917/truefaces-api --platform managed
+Los depliegues han sido automatizados con Cloud Build
 
 
 ## CloudBuild
-Para realizar los despliegues de codigo automáticos
-
-Se crea el fichero cloudbuild.yaml con los pasos del despliegue.
+Se crea el fichero cloudbuild.yaml con los pasos del despliegue. Para que funcione correctamente hay que declarar dentro del trigger de despliegue las siguientes variables de entorno:
+  _DATABASE_URL: postgresql://<usuario>:<password>@<ip de la bds>/<nombre del bds>
+  _SECRET_KEY: Cadena alfanumérica para poder encriptar/desencriptar las contraseñas de los usuarios
+  
+Se puede usar como ejemplo las variables definidas dentro del cloudbuild.yml
