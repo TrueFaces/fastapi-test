@@ -8,3 +8,6 @@ gunicorn
 psycopg2-binary
 python-jose
 passlib
+opencv-python-headless==4.5.3.56
+tensorflow
+numpy
