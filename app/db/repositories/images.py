@@ -8,3 +8,6 @@ def get_images(db: Session, skip: int = 0, limit: int = 100):
 def get_image(db: Session, id: int):
     return db.query(ImageModel).filter(ImageModel.id == id).first()
 
+def delete_image(db: Session, image):
+    db.delete(image)
+    db.commit() 
