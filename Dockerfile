@@ -7,7 +7,7 @@ WORKDIR $APP_HOME
 # set env variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV GOOGLE_APPLICATION_CREDENTIALS $APP_HOME/$APP_HOME/secrets/service_account.json
+ENV GOOGLE_APPLICATION_CREDENTIALS $APP_HOME/secrets/service_account.json
 
 # install dependencies
 COPY requirements.txt .
