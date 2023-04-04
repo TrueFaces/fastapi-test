@@ -1,18 +1,35 @@
+from fastapi import UploadFile
+from fastapi.responses import StreamingResponse
 from google.cloud import storage
+import io
 
-def upload_file_to_bucket(bucket_name, blob_name, file):
-    """Write and read a blob from GCS using file-like IO"""
-    # The ID of your GCS bucket
-    # bucket_name = "your-bucket-name"
+from fastapi.security import OAuth2PasswordBearer
+from fastapi.logger import logger
 
-    # The ID of your new GCS object
-    # blob_name = "storage-object-name"
+from app.config import settings
 
+async def upload_file_to_bucket(user_id: int, file: UploadFile):
+    file_path = f'data/user/{user_id}/{file.filename}'
+    
     storage_client = storage.Client()
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(blob_name)
+    bucket = storage_client.bucket(settings.bucket)
 
-    # Mode can be specified as wb/rb for bytes mode.
-    # See: https://docs.python.org/3/library/io.html
-    with blob.open("w") as f:
-        f.write(file)
+    blob = bucket.blob(file_path)
+    blob.upload_from_file(file.file)
+
+    return blob.public_url
+
+
+async def download_file_from_bucket(user_id: int, filename: str):
+    file_path = f'data/user/{user_id}/{filename}'
+    
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(settings.bucket)
+
+    blob = bucket.blob(file_path)
+
+    file_stream = io.BytesIO()
+    blob.download_to_file(file_stream)
+    file_stream.seek(0)
+
+    return StreamingResponse(file_stream, media_type="application/octet-stream", headers={"Content-Disposition": f"attachment; filename={filename}"})

@@ -17,6 +17,7 @@ Los depliegues han sido automatizados con Cloud Build
 Se crea el fichero cloudbuild.yaml con los pasos del despliegue. Para que funcione correctamente hay que declarar dentro del trigger de despliegue las siguientes variables de entorno:
   _DATABASE_URL: postgresql://<usuario>:<password>@<ip de la bds>/<nombre del bds>
   _SECRET_KEY: Cadena alfanumérica para poder encriptar/desencriptar las contraseñas de los usuarios
+  _BUCKET: Nombre del bucket en el que se almacenaran los datos de la aplicación
   
 Se puede usar como ejemplo las variables definidas dentro del cloudbuild.yml
 

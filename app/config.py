@@ -5,5 +5,6 @@ class Settings(BaseSettings):
     app_name: str = "Truefaces API"
     secret_key: str = os.getenv("SECRET_KEY")
     database_url: str = os.getenv("DATABASE_URL")
+    bucket: str = os.getenv("BUCKET")
 
 settings = Settings()

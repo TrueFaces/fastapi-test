@@ -9,6 +9,7 @@ from app.db.database import get_db
 from app.dependencies import oauth2_scheme
 
 from app.internal.auth import get_current_user
+from app.utils.storage import upload_file_to_bucket
 
 router = APIRouter( prefix="/users",
     tags=["users"])
@@ -52,8 +53,9 @@ async def upload_user_image(file: UploadFile,
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
    
-    image = ImageCreate(image_url="https://bucket.truefaces.com/2/truefaces.jpg", 
-                        thumbnail_url="https://bucket.truefaces.com/2/truefaces_thumbnail.jpg", 
+    path = await upload_file_to_bucket(user.id, file)
+    image = ImageCreate(image_url=path, 
+                        thumbnail_url=path, 
                         filesize=file.size,
                         filename=file.filename,
                         has_face=False) 
