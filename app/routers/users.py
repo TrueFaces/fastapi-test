@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 from pydantic import BaseModel
+import time
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -67,6 +68,8 @@ async def upload_user_image(file: UploadFile,
     user = await get_current_user(db=db, token=token)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+
+    file.filename = f"{int(time.time())}_{file.filename}"
 
     path = await upload_file_to_bucket(user.id, file)
 
