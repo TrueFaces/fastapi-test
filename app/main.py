@@ -27,14 +27,17 @@ app.include_router(auth.router)
 app.include_router(users.router, dependencies=[Depends(oauth2_scheme)])
 app.include_router(images.router, dependencies=[Depends(oauth2_scheme)])
 
+
 @app.get("/docs", include_in_schema=False)
 async def get_swagger_documentation():
     return get_swagger_ui_html(openapi_url="/openapi.json", title="docs")
+
 
 @app.get("/redoc", include_in_schema=False)
 async def get_redoc_documentation():
     return get_redoc_html(openapi_url="/openapi.json", title="docs")
 
+
 @app.get("/")
 async def root():
-    return {"status": "runnig"}
+    return {"status": "running"}
