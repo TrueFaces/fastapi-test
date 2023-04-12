@@ -77,7 +77,7 @@ async def upload_user_image(file: UploadFile,
     contents = await file.read()
     nparr = np.frombuffer(contents, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (100, 100))
     img = img.astype('float32') / 255.0
     img = np.expand_dims(img, axis=0)
@@ -88,7 +88,7 @@ async def upload_user_image(file: UploadFile,
     prediction = model.predict(img)
 
     # Devolver la predicción
-    has_face = prediction[0][0] > 0.5
+    has_face = prediction[0][0] > 0.01
     print("------> prediction: ", prediction[0][0])
 
     image = ImageCreate(image_url=path,
@@ -110,7 +110,7 @@ async def predict(file: UploadFile,
     contents = await file.read()
     nparr = np.frombuffer(contents, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     img = cv2.resize(img, (100, 100))
     img = img.astype('float32') / 255.0
     img = np.expand_dims(img, axis=0)
@@ -121,7 +121,7 @@ async def predict(file: UploadFile,
     prediction = model.predict(img)
 
     # Devolver la predicción
-    if prediction[0][0] > 0.5:
+    if prediction[0][0] > 0.01:
         face = "La imagen es una cara."
     else:
         face = "La imagen no es una cara."
