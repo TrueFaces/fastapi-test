@@ -99,7 +99,7 @@ async def predict(file: UploadFile):
     prediction = predict_has_face(file)
 
     # Devolver la predicción
-    if prediction[0][0] > 0.5:
+    if prediction[0][0] > 0.01:
         face = "La imagen es una cara."
     else:
         face = "La imagen no es una cara."
