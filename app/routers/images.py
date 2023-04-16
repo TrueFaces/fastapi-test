@@ -77,10 +77,8 @@ async def upload_user_image(file: UploadFile,
 
     path = await upload_file_to_bucket(user.id, file)
 
-    await file.seek(0)
-
-    has_face = predict_has_face(file)
-    has_avatar = predict_has_avatar(file)
+    has_face = await predict_has_face(file)
+    has_avatar = await predict_has_avatar(file)
 
     image = ImageCreate(image_url=path,
                         thumbnail_url=path,
