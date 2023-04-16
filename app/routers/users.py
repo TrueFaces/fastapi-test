@@ -10,9 +10,7 @@ from app.dependencies import oauth2_scheme
 
 from app.internal.auth import get_current_user
 from app.utils.storage import upload_file_to_bucket
-import cv2
-import numpy as np
-from tensorflow.keras.models import load_model
+from app.utils.ai_models import predict_has_face
 from pydantic import BaseModel
 import time
 
@@ -61,7 +59,7 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/upload", response_model=Image)
-async def upload_user_image(file: UploadFile,
+async def upload_avatar_image(file: UploadFile,
                             db: Session = Depends(get_db),
                             token: str = Depends(oauth2_scheme)):
 
@@ -73,52 +71,32 @@ async def upload_user_image(file: UploadFile,
 
     path = await upload_file_to_bucket(user.id, file)
 
+    # Check if got face
     await file.seek(0)
-    contents = await file.read()
-    nparr = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = cv2.resize(img, (100, 100))
-    img = img.astype('float32') / 255.0
-    img = np.expand_dims(img, axis=0)
-    img = np.expand_dims(img, axis=-1)
+    print("------> prediction: ", await predict_has_face(file))
 
-    # Hacer la predicción
-    model = load_model("/app/app/models/modelo.h5")
-    prediction = model.predict(img)
+    has_face = await predict_has_face(file)
 
-    # Devolver la predicción
-    has_face = prediction[0][0] > 0.5
-    print("------> prediction: ", prediction[0][0])
-
-    image = ImageCreate(image_url=path,
+    if has_face:
+        image = ImageCreate(image_url=path,
                         thumbnail_url=path,
                         filesize=file.size,
+                        is_avatar=True,
                         filename=file.filename,
+                        has_avatar = True,
                         has_face=has_face)
-    return usersRepository.create_user_image(db=db,
+        return usersRepository.create_user_image(db=db,
                                              image=image,
                                              user_id=user.id)
-
+    else:
+        raise HTTPException(status_code=400, detail="Image could not be avatar because it has'nt got a face") 
+        
 
 # Ruta para realizar las predicciones a partir de un archivo
 @router.post("/predict", response_model=PredictionSchema)
-async def predict(file: UploadFile,
-                  db: Session = Depends(get_db),
-                  token: str = Depends(oauth2_scheme)):
+async def predict(file: UploadFile):
     # Cargar imagen y aplicar preprocesamiento
-    contents = await file.read()
-    nparr = np.frombuffer(contents, np.uint8)
-    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    img = cv2.resize(img, (100, 100))
-    img = img.astype('float32') / 255.0
-    img = np.expand_dims(img, axis=0)
-    img = np.expand_dims(img, axis=-1)
-
-    # Hacer la predicción
-    model = load_model("/app/app/models/modelo.h5")
-    prediction = model.predict(img)
+    prediction = predict_has_face(file)
 
     # Devolver la predicción
     if prediction[0][0] > 0.5:

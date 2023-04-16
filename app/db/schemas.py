@@ -7,6 +7,8 @@ class ImageBase(BaseModel):
     filesize: int
     filename: str
     has_face: bool
+    has_avatar: bool
+    is_avatar: bool
 
 
 class ImageCreate(ImageBase):

@@ -22,6 +22,8 @@ class Image(Base):
     image_url = Column(String)
     thumbnail_url = Column(String)
     has_face = Column(Boolean, default=False)
+    has_avatar = Column(Boolean, default=False)
+    is_avatar = Column(Boolean, default=False)
     filesize = Column(BigInteger)
     filename = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))

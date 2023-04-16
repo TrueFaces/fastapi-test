@@ -31,6 +31,9 @@ def create_user_image(db: Session, image: ImageCreate, user_id: int):
     db_image = ImageModel(user_id=user_id,
                           thumbnail_url=image.thumbnail_url, 
                           image_url = image.image_url,
+                          is_avatar=image.is_avatar,
+                          has_face=image.has_face,
+                          has_avatar=image.has_avatar,
                           filename=image.filename,
                           filesize=image.filesize )
     db.add(db_image)
