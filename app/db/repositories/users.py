@@ -27,7 +27,7 @@ def create_user(db: Session, user: UserCreate):
     db.refresh(db_user)
     return db_user
 
-def create_user_image(db: Session, image: ImageCreate, user_id: int):
+def create_user_image(db: Session, image: ImageCreate, user_id: int, domain: str):
     db_image = ImageModel(user_id=user_id,
                           thumbnail_url=image.thumbnail_url, 
                           image_url = image.image_url,
@@ -37,6 +37,14 @@ def create_user_image(db: Session, image: ImageCreate, user_id: int):
                           filename=image.filename,
                           filesize=image.filesize )
     db.add(db_image)
+    db.commit()
+    db.refresh(db_image)
+
+    # Generate private URL
+    url = f'{domain}/images/{db_image.id}/download'
+    db_image.image_url = url
+    db_image.thumbnail_url = url
+    db.merge(db_image)
     db.commit()
     db.refresh(db_image)
     return db_image

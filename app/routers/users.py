@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, UploadFile
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, Request
 from sqlalchemy.orm import Session
 
 from app.db.schemas import User, UserCreate
@@ -11,6 +11,7 @@ from app.dependencies import oauth2_scheme
 from app.internal.auth import get_current_user
 from app.utils.storage import upload_file_to_bucket
 from app.utils.ai_models import predict_has_face
+from app.utils.request import get_domain
 from pydantic import BaseModel
 import time
 
@@ -60,6 +61,7 @@ def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/upload", response_model=Image)
 async def upload_avatar_image(file: UploadFile,
+                              request: Request,
                             db: Session = Depends(get_db),
                             token: str = Depends(oauth2_scheme)):
 
@@ -84,7 +86,8 @@ async def upload_avatar_image(file: UploadFile,
                         has_face=has_face)
         return usersRepository.create_user_image(db=db,
                                              image=image,
-                                             user_id=user.id)
+                                             user_id=user.id,
+                                             domain=get_domain(request))
     else:
         raise HTTPException(status_code=400, detail="Image could not be avatar because it has'nt got a face") 
         

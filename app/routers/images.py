@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 
@@ -11,6 +11,7 @@ from app.dependencies import oauth2_scheme
 from app.internal.auth import get_current_user
 from app.utils.storage import download_file_from_bucket, delete_file_from_bucket, upload_file_to_bucket
 from app.utils.ai_models import predict_has_face,  predict_has_avatar
+from app.utils.request import get_domain
 import time
 
 router = APIRouter(
@@ -66,6 +67,7 @@ async def delete_user_image(id:int,
 
 @router.post("/upload", response_model=Image)
 async def upload_user_image(file: UploadFile,
+                            request: Request,
                             db: Session = Depends(get_db),
                             token: str = Depends(oauth2_scheme)):
 
@@ -89,4 +91,5 @@ async def upload_user_image(file: UploadFile,
                         has_avatar=has_avatar)
     return usersRepository.create_user_image(db=db,
                                              image=image,
-                                             user_id=user.id)
+                                             user_id=user.id,
+                                             domain=get_domain(request))
