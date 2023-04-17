@@ -68,29 +68,33 @@ async def upload_avatar_image(file: UploadFile,
     user = await get_current_user(db=db, token=token)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
+    
+    avatar = usersRepository.get_avatar(db=db, user_id=user.id)
+    if avatar is None:
+        file.filename = f"{int(time.time())}_{file.filename}"
+        path = await upload_file_to_bucket(user.id, file)
 
-    file.filename = f"{int(time.time())}_{file.filename}"
+        # Check if got face
+        has_face = await predict_has_face(file)
 
-    path = await upload_file_to_bucket(user.id, file)
+        if has_face:
+            image = ImageCreate(image_url=path,
+                            thumbnail_url=path,
+                            filesize=file.size,
+                            filename=file.filename,
+                            is_avatar = True,
+                            has_avatar = True,
+                            has_face=has_face)
+            return usersRepository.create_user_image(db=db,
+                                                image=image,
+                                                user_id=user.id,
+                                                domain=get_domain(request))
+        else:
+            raise HTTPException(status_code=400, detail="Image could not be avatar because it has'nt got a face") 
 
-    # Check if got face
-    has_face = await predict_has_face(file)
-
-    if has_face:
-        image = ImageCreate(image_url=path,
-                        thumbnail_url=path,
-                        filesize=file.size,
-                        filename=file.filename,
-                        is_avatar = True,
-                        has_avatar = True,
-                        has_face=has_face)
-        return usersRepository.create_user_image(db=db,
-                                             image=image,
-                                             user_id=user.id,
-                                             domain=get_domain(request))
     else:
-        raise HTTPException(status_code=400, detail="Image could not be avatar because it has'nt got a face") 
-        
+        raise HTTPException(status_code=400, detail="You've got one avatar uploaded. Delete first to upload new one") 
+    
 
 # Ruta para realizar las predicciones a partir de un archivo
 @router.post("/predict", response_model=PredictionSchema)

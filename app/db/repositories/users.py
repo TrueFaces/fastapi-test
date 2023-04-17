@@ -19,6 +19,9 @@ def get_user_by_username(db: Session, username: str):
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(UserModel).offset(skip).limit(limit).all()
 
+def get_avatar(db: Session, user_id: int):
+    return db.query(ImageModel).filter(ImageModel.user_id == user_id).filter(ImageModel.is_avatar == True).first()
+
 def create_user(db: Session, user: UserCreate):
     hashed_password = get_password_hash(user.password)
     db_user = UserModel(email=user.email, password=hashed_password, username=user.username)

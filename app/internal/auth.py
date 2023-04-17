@@ -83,8 +83,14 @@ async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-@router.get("/me", response_model=User)
-async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
+@router.get("/me")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)],  
+                        db: Session = Depends(get_db)):
     cleanUser = current_user
     cleanUser.images = []
+    del cleanUser.password
+    avatar = usersRepository.get_avatar(db, cleanUser.id)
+    if avatar is None:
+        cleanUser.avatar = None
+    cleanUser.avatar = avatar.image_url
     return cleanUser

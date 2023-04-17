@@ -20,13 +20,15 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[Image])
-async def read_items(db: Session = Depends(get_db)):
-    return imagesRepository.get_images(db=db)
+async def read_items(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    user = await get_current_user(db=db, token=token)
+    return imagesRepository.get_images(db=db, user_id=user.id)
 
 
-@router.get("/{id}", response_model=Image)
-async def read_item(id: str,  db: Session = Depends(get_db)):
-    return imagesRepository.get_image(id=id, db=db)
+@router.get("/{id}", response_model=Image | None)
+async def read_item(id: str,  db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    user = await get_current_user(db=db, token=token)
+    return imagesRepository.get_image(id=id, db=db, user_id=user.id)
 
 @router.get("/{id}/download", response_model=None)
 async def read_item(id: str,  
@@ -93,3 +95,9 @@ async def upload_user_image(file: UploadFile,
                                              image=image,
                                              user_id=user.id,
                                              domain=get_domain(request))
+
+
+async def get_user_avatar_url(db: Session = Depends(get_db),
+                            token: str = Depends(oauth2_scheme)):
+    user = await get_current_user(db=db, token=token)
+
