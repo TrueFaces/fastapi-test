@@ -38,7 +38,9 @@ async def read_item(id: str,
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
-    image = imagesRepository.get_image(id=id, db=db)
+    image = imagesRepository.get_image(id=id, db=db,user_id=user.id)
+    if image is None:
+        raise HTTPException(status_code=404, detail="Image not found")
 
     return await download_file_from_bucket(user_id= user.id, filename=image.filename)
 
@@ -50,7 +52,7 @@ async def delete_user_image(id:int,
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
-    image = imagesRepository.get_image(db=db, id=id)
+    image = imagesRepository.get_image(db=db, id=id, user_id=user.id)
     if image is None:
         raise HTTPException(status_code=404, detail="Image not found")
     
