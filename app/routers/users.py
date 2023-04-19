@@ -5,11 +5,12 @@ from app.db.schemas import User, UserCreate
 from app.db.schemas import Image, ImageCreate
 from app.db.models import Image as ImageModel
 from app.db.repositories import users as usersRepository
+from app.db.repositories import images as imagesRepository
 from app.db.database import get_db
 from app.dependencies import oauth2_scheme
 
 from app.internal.auth import get_current_user
-from app.utils.storage import upload_file_to_bucket
+from app.utils.storage import upload_file_to_bucket, delete_file_from_bucket
 from app.utils.ai_models import predict_has_face
 from app.utils.request import get_domain
 from pydantic import BaseModel
@@ -94,6 +95,22 @@ async def upload_avatar_image(file: UploadFile,
 
     else:
         raise HTTPException(status_code=400, detail="You've got one avatar uploaded. Delete first to upload new one") 
+
+@router.delete("/removeAvatar")
+async def remove_avatar_image(db: Session = Depends(get_db),
+                            token: str = Depends(oauth2_scheme)):
+    user = await get_current_user(db=db, token=token)
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    avatar = usersRepository.get_avatar(db=db, user_id=user.id)
+    if avatar is None:
+        raise HTTPException(status_code=404, detail="User does not have avatar")
+    
+    await delete_file_from_bucket(user_id=user.id, filename=avatar.filename)
+    imagesRepository.delete_image(db=db,image=avatar)
+    
+    return {"status": "ok"}
     
 
 # Ruta para realizar las predicciones a partir de un archivo

@@ -92,5 +92,6 @@ async def read_users_me(current_user: Annotated[User, Depends(get_current_active
     avatar = usersRepository.get_avatar(db, cleanUser.id)
     if avatar is None:
         cleanUser.avatar = None
-    cleanUser.avatar = avatar.image_url
+    else: 
+        cleanUser.avatar = avatar.image_url
     return cleanUser

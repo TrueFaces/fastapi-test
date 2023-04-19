@@ -95,9 +95,3 @@ async def upload_user_image(file: UploadFile,
                                              image=image,
                                              user_id=user.id,
                                              domain=get_domain(request))
-
-
-async def get_user_avatar_url(db: Session = Depends(get_db),
-                            token: str = Depends(oauth2_scheme)):
-    user = await get_current_user(db=db, token=token)
-
