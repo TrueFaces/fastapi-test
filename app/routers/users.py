@@ -73,12 +73,12 @@ async def upload_avatar_image(file: UploadFile,
     avatar = usersRepository.get_avatar(db=db, user_id=user.id)
     if avatar is None:
         file.filename = f"{int(time.time())}_{file.filename}"
-        path = await upload_file_to_bucket(user.id, file)
-
+        
         # Check if got face
         has_face = await predict_has_face(file)
-
+        
         if has_face:
+            path = await upload_file_to_bucket(user.id, file)
             image = ImageCreate(image_url=path,
                             thumbnail_url=path,
                             filesize=file.size,
