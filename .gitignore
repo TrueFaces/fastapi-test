@@ -1,5 +1,6 @@
 .space
 .vscode
+*.h5
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
