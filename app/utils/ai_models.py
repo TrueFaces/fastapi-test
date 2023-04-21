@@ -1,7 +1,8 @@
 from fastapi import UploadFile
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
+
+from app.utils.storage import load_model_from_bucket
 
 def preprocess_image(contents: bytes):
     nparr = np.frombuffer(contents, np.uint8)
@@ -19,8 +20,8 @@ async def predict_has_face(file: UploadFile):
     contents = await file.read()
     img = preprocess_image(contents)
 
-    # Hacer la predicción
-    model = load_model("/app/app/models/modelo.h5")
+    # Hacer la pr
+    model = load_model_from_bucket("modelo.h5")
     prediction = model.predict(img)
     print("------> prediction: ", prediction[0][0])
 
@@ -34,7 +35,7 @@ async def predict_has_avatar(file: UploadFile):
     img = preprocess_image(contents)
 
     # Hacer la predicción contra el nuevo modelo
-    # model = load_model("/app/app/models/modelo.h5")
+    # model = load_model_from_bucket("modelo2.h5")
     # prediction = model.predict(img)
     # print("------> prediction: ", prediction[0][0])
 
